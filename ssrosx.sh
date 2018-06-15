@@ -87,10 +87,10 @@ function install_ssrosx(){
 	#wget -c --no-check-certificate "https://github.com/ssrpanel/SSRPanel/archive/${ssrpanel_new_ver}.tar.gz"
 	#tar zxvf "${ssrpanel_new_ver}.tar.gz" && cd SSRPanel-* && mv * .[^.]* ..&& cd /home/wwwroot/default && rm -rf "${ssrpanel_new_ver}.tar.gz"
 	#替换数据库配置
-	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/ssrosx/master/app.php
-	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/ssrosx/master/database.php
-	wget -N -P /usr/local/php/etc/ https://raw.githubusercontent.com/ssrosx/ssrosx/master/php.ini
-	wget -N -P /usr/local/nginx/conf/ https://raw.githubusercontent.com/ssrosx/ssrosx/master/nginx.conf
+	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/app.php
+	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/database.php
+	wget -N -P /usr/local/php/etc/ https://raw.githubusercontent.com/ssrosx/script/master/php.ini
+	wget -N -P /usr/local/nginx/conf/ https://raw.githubusercontent.com/ssrosx/script/master/nginx.conf
 	service nginx restart
 	#设置数据库
 	#mysql -uroot -proot -e"create database ssrosx;" 
@@ -196,7 +196,7 @@ function install_ssr(){
 	echo "$LIB_PING $LIB" >> ping.pl
 	libAddr=`sort -V ping.pl|sed -n '1p'|awk '{print $2}'`
 	if [ "$libAddr" == "$GIT" ];then
-		libAddr='https://raw.githubusercontent.com/ssrosx/ssrosx/master/libsodium-1.0.13.tar.gz'
+		libAddr='https://raw.githubusercontent.com/ssrosx/script/master/libsodium-1.0.13.tar.gz'
 	else
 		libAddr='https://download.libsodium.org/libsodium/releases/libsodium-1.0.13.tar.gz'
 	fi
@@ -209,14 +209,14 @@ function install_ssr(){
 	yum -y install python-setuptools
 	easy_install supervisor
     cd /root
-	wget https://raw.githubusercontent.com/ssrosx/ssrosx/master/shadowsocksr.zip
+	wget https://raw.githubusercontent.com/ssrosx/script/master/shadowsocksr.zip
 	unzip shadowsocksr.zip
 	cd shadowsocksr
 	./initcfg.sh
 	chmod 777 *
-	wget -N -P /root/shadowsocksr/ https://raw.githubusercontent.com/ssrosx/ssrosx/master/user-config.json
-	wget -N -P /root/shadowsocksr/ https://raw.githubusercontent.com/ssrosx/ssrosx/master/userapiconfig.py
-	wget -N -P /root/shadowsocksr/ https://raw.githubusercontent.com/ssrosx/ssrosx/master/usermysql.json
+	wget -N -P /root/shadowsocksr/ https://raw.githubusercontent.com/ssrosx/script/master/user-config.json
+	wget -N -P /root/shadowsocksr/ https://raw.githubusercontent.com/ssrosx/script/master/userapiconfig.py
+	wget -N -P /root/shadowsocksr/ https://raw.githubusercontent.com/ssrosx/script/master/usermysql.json
 	sed -i "s#Userip#${Userip}#" /root/shadowsocksr/usermysql.json
 	sed -i "s#Dbuser#${Dbuser}#" /root/shadowsocksr/usermysql.json
 	sed -i "s#Dbport#${Dbport}#" /root/shadowsocksr/usermysql.json
@@ -278,10 +278,10 @@ function install_node(){
 	reboot
 }
 function install_BBR(){
-     wget --no-check-certificate https://raw.githubusercontent.com/ssrosx/ssrosx/master/bbr.sh&&chmod +x bbr.sh&&./bbr.sh
+     wget --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/bbr.sh&&chmod +x bbr.sh&&./bbr.sh
 }
 function install_RS(){
-     wget -N --no-check-certificate https://raw.githubusercontent.com/ssrosx/ssrosx/master/serverspeeder.sh && bash serverspeeder.sh
+     wget -N --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/serverspeeder.sh && bash serverspeeder.sh
 }
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
