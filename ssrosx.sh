@@ -123,8 +123,11 @@ EOF
     service php-fpm restart
 	#开启日志监控
 	yum -y install vixie-cron crontabs
-	rm -rf /var/spool/cron/root
-	echo '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1' >> /var/spool/cron/root
+	#rm -rf /var/spool/cron/root
+	#echo '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1' >> /var/spool/cron/root
+	rm -rf /var/spool/cron/www
+	echo '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1' >> /var/spool/cron/www
+	#或者执行 crontab -e -u www 在文件中加入 '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1'
 	service crond restart
 	#修复数据库
 	# mv /home/wwwroot/default/phpmyadmin/ /home/wwwroot/default/public/
