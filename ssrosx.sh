@@ -38,112 +38,6 @@ function check_system(){
 	exit 0;
 	fi
 }
-function install_db(){
-#	yum -y remove httpd
-	yum install -y unzip zip git
-	#自动选择下载节点
-#	GIT='raw.githubusercontent.com'
-#	MY='gitee.com'
-#	GIT_PING=`ping -c 1 -w 1 $GIT|grep time=|awk '{print $7}'|sed "s/time=//"`
-#	MY_PING=`ping -c 1 -w 1 $MY|grep time=|awk '{print $7}'|sed "s/time=//"`
-#	echo "$GIT_PING $GIT" > ping.pl
-#	echo "$MY_PING $MY" >> ping.pl
-#	fileinfo=`sort -V ping.pl|sed -n '1p'|awk '{print $2}'`
-#	if [ "$fileinfo" == "$GIT" ];then
-#		fileinfo='https://raw.githubusercontent.com/ssrosx/script/master/fileinfo.zip'
-#	else
-#		fileinfo='https://raw.githubusercontent.com/ssrosx/script/master/fileinfo.zip'
-#	fi
-#	rm -f ping.pl	
-	wget -c --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/lnmp1.4.zip && unzip lnmp1.4.zip && rm -rf lnmp1.4.zip && cd lnmp1.4 && chmod +x install.sh && ./install.sh
-	#clear
-	#安装fileinfo必须组件
-#	cd /root && wget --no-check-certificate $fileinfo
-#	File="/root/fileinfo.zip"
-#    if [ ! -f "$File" ]; then  
-#    echo "fileinfo组件下载失败，请检查/root/fileinfo.zip"
-#	exit 0;
-#	else
-#    unzip fileinfo.zip
-#    fi
-#	cd /root/fileinfo && /usr/local/php/bin/phpize && ./configure --with-php-config=/usr/local/php/bin/php-config --with-fileinfo && make && make install
-#	cd /home/wwwroot/
-#	cp -r default/phpmyadmin/ .  #复制数据库
-#	cd default
-#	rm -rf index.html
-	#获取git最新master版文件 带有风险
-	#git clone https://github.com/ssrpanel/SSRPanel.git
-	#cd SSRPanel
-	#git submodule update --init --recursive
-	#mv * .[^.]* ..&& cd /home/wwwroot/default && rm -rf SSRPanel
-
-#	git clone https://github.com/ssrosx/ssrosx.git
-#	cd ssrosx
-#	git submodule update --init --recursive
-#	mv * .[^.]* ..&& cd /home/wwwroot/default && rm -rf ssrosx
-	
-	#获取git最新released版文件 适用于生产环境
-	#ssrpanel_new_ver=$(wget --no-check-certificate -qO- https://api.github.com/repos/ssrpanel/SSRPanel/releases | grep -o '"tag_name": ".*"' |head -n 1| sed 's/"//g;s/v//g' | sed 's/tag_name: //g')
-	#wget -c --no-check-certificate "https://github.com/ssrpanel/SSRPanel/archive/${ssrpanel_new_ver}.tar.gz"
-	#tar zxvf "${ssrpanel_new_ver}.tar.gz" && cd SSRPanel-* && mv * .[^.]* ..&& cd /home/wwwroot/default && rm -rf "${ssrpanel_new_ver}.tar.gz"
-	#替换数据库配置
-#	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/app.php
-#	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/database.php
-#	wget -N -P /usr/local/php/etc/ https://raw.githubusercontent.com/ssrosx/script/master/php.ini
-#	wget -N -P /usr/local/nginx/conf/ https://raw.githubusercontent.com/ssrosx/script/master/nginx.conf
-#	service nginx restart
-	#设置数据库
-	#mysql -uroot -proot -e"create database ssrosx;" 
-	#mysql -uroot -proot -e"use ssrosx;" 
-	#mysql -uroot -proot ssrosx < /home/wwwroot/default/sql/db.sql
-	#开启数据库远程访问，以便对接节点
-	#mysql -uroot -proot -e"use mysql;"
-	#mysql -uroot -proot -e"GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;"
-	#mysql -uroot -proot -e"flush privileges;"
-	#远程数据库
-	#Host='sql.ssrosx.com'
-	#mysql -h$Host -uroot -proot --default-character-set=utf8mb4<<EOF
-	#本地数据库
-	wget https://raw.githubusercontent.com/ssrosx/ssrosx/sql/db.sql
-	mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
-	create database ssrosx;
-	use ssrosx;
-	source /root/db.sql;
-	GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
-	flush privileges;
-	EOF
-	#安装依赖
-#	cd /home/wwwroot/default/
-#	php composer.phar install
-#	php artisan key:generate
-#    chown -R www:www storage/
-#    chmod -R 777 storage/
-#	chattr -i .user.ini
-#	mv .user.ini public
-#	chown -R root:root *
-#	chmod -R 777 *
-#	chown -R www:www storage
-#	chattr +i public/.user.ini
-#	service nginx restart
-#    service php-fpm restart
-	#开启日志监控
-#	yum -y install vixie-cron crontabs
-	#rm -rf /var/spool/cron/root
-	#echo '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1' >> /var/spool/cron/root
-#	rm -rf /var/spool/cron/www
-#	echo '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1' >> /var/spool/cron/www
-	#或者执行 crontab -e -u www 在文件中加入 '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1'
-#	service crond restart
-	#修复数据库
-	# mv /home/wwwroot/default/phpmyadmin/ /home/wwwroot/default/public/
-	# cd /home/wwwroot/default/public/phpmyadmin
-	# chmod -R 755 *
-#	lnmp restart
-#	IPAddress=`wget http://members.3322.org/dyndns/getip -O - -q ; echo`;
-#	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-#	echo "#    一键搭建前端面板完成，请访问http://${IPAddress}~ 查看         #"
-#	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-}
 function install_ssrosx(){
 	yum -y remove httpd
 	yum install -y unzip zip git
@@ -396,6 +290,22 @@ function install_BBR(){
 function install_RS(){
      wget -N --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/serverspeeder.sh && bash serverspeeder.sh
 }
+
+function install_db(){
+	clear
+	yum install -y unzip zip git
+	wget -c --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/lnmp1.4.zip && unzip lnmp1.4.zip && rm -rf lnmp1.4.zip && cd lnmp1.4 && chmod +x install.sh && ./install.sh
+	#本地数据库
+	wget https://raw.githubusercontent.com/ssrosx/ssrosx/sql/db.sql
+	mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
+	create database ssrosx;
+	use ssrosx;
+	source /root/db.sql;
+	GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+	flush privileges;
+	EOF
+}
+
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 ulimit -c 0
