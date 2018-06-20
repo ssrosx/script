@@ -100,13 +100,13 @@ function install_ssrosx(){
 	#mysql -uroot -proot -e"use mysql;"
 	#mysql -uroot -proot -e"GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;"
 	#mysql -uroot -proot -e"flush privileges;"
-mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
-create database ssrosx;
-use ssrosx;
-source /home/wwwroot/default/sql/db.sql;
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
-flush privileges;
-EOF
+#mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
+#create database ssrosx;
+#use ssrosx;
+#source /home/wwwroot/default/sql/db.sql;
+#GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+#flush privileges;
+#EOF
 	#安装依赖
 	cd /home/wwwroot/default/
 	php composer.phar install
@@ -123,8 +123,11 @@ EOF
     service php-fpm restart
 	#开启日志监控
 	yum -y install vixie-cron crontabs
-	rm -rf /var/spool/cron/root
-	echo '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1' >> /var/spool/cron/root
+	#rm -rf /var/spool/cron/root
+	#echo '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1' >> /var/spool/cron/root
+	rm -rf /var/spool/cron/www
+	echo '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1' >> /var/spool/cron/www
+	#或者执行 crontab -e -u www 在文件中加入 '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1'
 	service crond restart
 	#修复数据库
 	# mv /home/wwwroot/default/phpmyadmin/ /home/wwwroot/default/public/
@@ -283,6 +286,22 @@ function install_BBR(){
 function install_RS(){
      wget -N --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/serverspeeder.sh && bash serverspeeder.sh
 }
+
+function install_db(){
+	clear
+	yum install -y unzip zip git
+	wget -c --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/lnmp1.4.zip && unzip lnmp1.4.zip && rm -rf lnmp1.4.zip && cd lnmp1.4 && chmod +x install.sh && ./install.sh
+	#本地数据库
+	wget https://raw.githubusercontent.com/ssrosx/ssrosx/sql/db.sql
+mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
+create database ssrosx;
+use ssrosx;
+source /root/db.sql;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+flush privileges;
+EOF
+}
+
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 ulimit -c 0
@@ -299,7 +318,8 @@ echo "# 3.  一键搭建BBR加速                                               
 echo "# 4.  一键搭建锐速加速                                                    #"
 echo "# 5.  ssrosx官方升级脚本(可能没什么luan用)                               #"
 echo "# 6.  日志分析（仅支持单机单节点）                                          #" 
-echo "# 7.  一键更改数据库密码(仅适用于已搭建前端)                                 #" 
+echo "# 7.  安装独立数据库                                                      #" 
+echo "# 8.  一键更改数据库密码(仅适用于已搭建前端)                                 #" 
 echo "#    PS:建议请先搭建加速再搭建ssrosx相关。                               #"
 echo "#    此脚本仅适用于Centos 7. X 64位 系统                                  #"
 echo "#############################################################################"
@@ -325,6 +345,9 @@ elif [[ $num == "6" ]]
 then
 install_log
 elif [[ $num == "7" ]]
+then
+install_db
+elif [[ $num == "8" ]]
 then
 change_password
 else 
