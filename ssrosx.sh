@@ -104,7 +104,7 @@ function install_db(){
 	#Host='sql.ssrosx.com'
 	#mysql -h$Host -uroot -proot --default-character-set=utf8mb4<<EOF
 	#本地数据库
-	wget -c --no-check-certificate https://raw.githubusercontent.com/ssrosx/ssrosx/sql/db.sql
+	wget https://raw.githubusercontent.com/ssrosx/ssrosx/sql/db.sql
 	mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
 	create database ssrosx;
 	use ssrosx;
