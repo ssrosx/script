@@ -288,11 +288,10 @@ function install_RS(){
 }
 
 function install_db(){
-	clear
 	yum install -y unzip zip git
 	wget -c --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/lnmp1.4.zip && unzip lnmp1.4.zip && rm -rf lnmp1.4.zip && cd lnmp1.4 && chmod +x install.sh && ./install.sh db
 	#本地数据库
-	wget https://raw.githubusercontent.com/ssrosx/ssrosx/sql/db.sql
+	wget https://raw.githubusercontent.com/ssrosx/ssrosx/master/sql/db.sql
 mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
 create database ssrosx;
 use ssrosx;
