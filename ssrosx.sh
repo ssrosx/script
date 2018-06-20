@@ -104,11 +104,11 @@ function install_db(){
 	#Host='sql.ssrosx.com'
 	#mysql -h$Host -uroot -proot --default-character-set=utf8mb4<<EOF
 	#本地数据库
-	wget -N -P /root/sql/ https://raw.githubusercontent.com/ssrosx/ssrosx/sql/db.sql
+	wget -c --no-check-certificate https://raw.githubusercontent.com/ssrosx/ssrosx/sql/db.sql
 	mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
 	create database ssrosx;
 	use ssrosx;
-	source /root/sql/db.sql;
+	source /root/db.sql;
 	GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
 	flush privileges;
 	EOF
@@ -270,11 +270,11 @@ function change_password(){
 	read -p "请输入要设置的数据库密码:" Change_password
 	Change_password=${Change_password:-"root"}
 	echo -e "\033[31m您设置的密码是:${Change_password}\033[0m"
-mysql -hlocalhost -uroot -p$Default_password --default-character-set=utf8<<EOF
-use mysql;
-update user set password=passworD("${Change_password}") where user='root';
-flush privileges;
-EOF
+	mysql -hlocalhost -uroot -p$Default_password --default-character-set=utf8<<EOF
+	use mysql;
+	update user set password=passworD("${Change_password}") where user='root';
+	flush privileges;
+	EOF
 	echo "开始在设置文件中替换数据库信息..."
 	myFile="/root/shadowsocksr/server.py"
     if [ ! -f "$myFile" ]; then  
@@ -399,7 +399,7 @@ function install_RS(){
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 ulimit -c 0
-rm -rf ssrosx*
+#rm -rf ssrosx*
 clear
 check_system
 sleep 2
