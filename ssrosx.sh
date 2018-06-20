@@ -56,7 +56,7 @@ function install_db(){
 #	fi
 #	rm -f ping.pl	
 	 wget -c --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/lnmp1.4.zip && unzip lnmp1.4.zip && rm -rf lnmp1.4.zip && cd lnmp1.4 && chmod +x install.sh && ./install.sh
-#	clear
+	clear
 	#安装fileinfo必须组件
 #	cd /root && wget --no-check-certificate $fileinfo
 #	File="/root/fileinfo.zip"
