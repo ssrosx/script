@@ -55,8 +55,8 @@ function install_db(){
 #		fileinfo='https://raw.githubusercontent.com/ssrosx/script/master/fileinfo.zip'
 #	fi
 #	rm -f ping.pl	
-	 wget -c --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/lnmp1.4.zip && unzip lnmp1.4.zip && rm -rf lnmp1.4.zip && cd lnmp1.4 && chmod +x install.sh && ./install.sh
-	clear
+	wget -c --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/lnmp1.4.zip && unzip lnmp1.4.zip && rm -rf lnmp1.4.zip && cd lnmp1.4 && chmod +x install.sh && ./install.sh
+	#clear
 	#安装fileinfo必须组件
 #	cd /root && wget --no-check-certificate $fileinfo
 #	File="/root/fileinfo.zip"
@@ -399,7 +399,7 @@ function install_RS(){
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 ulimit -c 0
-#rm -rf ssrosx*
+rm -rf ssrosx*
 clear
 check_system
 sleep 2
