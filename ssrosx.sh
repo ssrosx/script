@@ -100,17 +100,13 @@ function install_ssrosx(){
 	#mysql -uroot -proot -e"use mysql;"
 	#mysql -uroot -proot -e"GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;"
 	#mysql -uroot -proot -e"flush privileges;"
-	#远程数据库
-	#Host='sql.ssrosx.com'
-	#mysql -h$Host -uroot -proot --default-character-set=utf8mb4<<EOF
-	#本地数据库
-#	mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
-#	create database ssrosx;
-#	use ssrosx;
-#	source /home/wwwroot/default/sql/db.sql;
-#	GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
-#	flush privileges;
-#	EOF
+mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
+create database ssrosx;
+use ssrosx;
+source /home/wwwroot/default/sql/db.sql;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+flush privileges;
+EOF
 	#安装依赖
 	cd /home/wwwroot/default/
 	php composer.phar install
@@ -127,11 +123,8 @@ function install_ssrosx(){
     service php-fpm restart
 	#开启日志监控
 	yum -y install vixie-cron crontabs
-	#rm -rf /var/spool/cron/root
-	#echo '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1' >> /var/spool/cron/root
-	rm -rf /var/spool/cron/www
-	echo '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1' >> /var/spool/cron/www
-	#或者执行 crontab -e -u www 在文件中加入 '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1'
+	rm -rf /var/spool/cron/root
+	echo '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1' >> /var/spool/cron/root
 	service crond restart
 	#修复数据库
 	# mv /home/wwwroot/default/phpmyadmin/ /home/wwwroot/default/public/
@@ -164,11 +157,11 @@ function change_password(){
 	read -p "请输入要设置的数据库密码:" Change_password
 	Change_password=${Change_password:-"root"}
 	echo -e "\033[31m您设置的密码是:${Change_password}\033[0m"
-	mysql -hlocalhost -uroot -p$Default_password --default-character-set=utf8<<EOF
-	use mysql;
-	update user set password=passworD("${Change_password}") where user='root';
-	flush privileges;
-	EOF
+mysql -hlocalhost -uroot -p$Default_password --default-character-set=utf8<<EOF
+use mysql;
+update user set password=passworD("${Change_password}") where user='root';
+flush privileges;
+EOF
 	echo "开始在设置文件中替换数据库信息..."
 	myFile="/root/shadowsocksr/server.py"
     if [ ! -f "$myFile" ]; then  
@@ -290,22 +283,6 @@ function install_BBR(){
 function install_RS(){
      wget -N --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/serverspeeder.sh && bash serverspeeder.sh
 }
-
-function install_db(){
-	clear
-	yum install -y unzip zip git
-	wget -c --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/lnmp1.4.zip && unzip lnmp1.4.zip && rm -rf lnmp1.4.zip && cd lnmp1.4 && chmod +x install.sh && ./install.sh
-	#本地数据库
-	wget https://raw.githubusercontent.com/ssrosx/ssrosx/sql/db.sql
-	mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
-	create database ssrosx;
-	use ssrosx;
-	source /root/db.sql;
-	GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
-	flush privileges;
-	EOF
-}
-
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 ulimit -c 0
@@ -316,16 +293,15 @@ sleep 2
 echo "#############################################################################"
 echo "#                      欢迎使用一键安装ssrosx和节点脚本。                 #"
 echo "# 请选择您想要搭建的脚本:                                                  #"
-echo "# 1.  一键安装ssrosx前端面板(不包括节点)                                   #"
-echo "# 2.  一键安装ssrosx节点(可单独搭建)                                       #"
+echo "# 1.  一键安装ssrosx前端面板(不包括节点)                                  #"
+echo "# 2.  一键安装ssrosx节点(可单独搭建)                                     #"
 echo "# 3.  一键搭建BBR加速                                                    #"
 echo "# 4.  一键搭建锐速加速                                                    #"
-echo "# 5.  ssrosx官方升级脚本(可能没什么luan用)                                 #"
+echo "# 5.  ssrosx官方升级脚本(可能没什么luan用)                               #"
 echo "# 6.  日志分析（仅支持单机单节点）                                          #" 
-echo "# 7.  安装独立数据库                                                      #" 
-echo "# 8.  一键更改数据库密码(仅适用于已搭建前端)                                 #" 
-echo "#    PS:建议请先搭建加速再搭建ssrosx相关。                                  #"
-echo "#    此脚本仅适用于Centos 7. X 64位 系统                                   #"
+echo "# 7.  一键更改数据库密码(仅适用于已搭建前端)                                 #" 
+echo "#    PS:建议请先搭建加速再搭建ssrosx相关。                               #"
+echo "#    此脚本仅适用于Centos 7. X 64位 系统                                  #"
 echo "#############################################################################"
 echo
 read num
@@ -349,9 +325,6 @@ elif [[ $num == "6" ]]
 then
 install_log
 elif [[ $num == "7" ]]
-then
-install_db
-elif [[ $num == "8" ]]
 then
 change_password
 else 
