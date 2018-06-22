@@ -145,10 +145,10 @@ function install_log(){
     echo "您的shadowsocksr环境未安装"
 	echo "请检查/root/shadowsocksr/ssserver.log是否存在"
 	else
-	cd /home/wwwroot/default/storage/app/public
+	cd /home/wwwroot/default/storage/app
 	ln -S ssserver.log /root/shadowsocksr/ssserver.log
 	chown www:www ssserver.log
-	chmod 0777 /home/wwwroot/default/storage/app/public/ssserver.log
+	chmod 0777 /home/wwwroot/default/storage/app/ssserver.log
 	chmod 777 -R /home/wwwroot/default/storage/logs/
 	echo "日志分析（仅支持单机单节点） - 安装成功"
     fi
