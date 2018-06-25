@@ -369,8 +369,9 @@ function install_RS(){
      wget -N --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/serverspeeder.sh && bash serverspeeder.sh
 }
 
-function check_caddy_sys(){
+function install_caddy_system(){
 	clear
+	yum install -y unzip zip
 	yum install sudo -y
 	read -p "请输入要添加的用户命(回车默认为ssrosx):" UserName
 	UserName=${UserName:-"ssrosx"}
@@ -382,56 +383,9 @@ function check_caddy_sys(){
 	sudo yum install epel-release -y
 	sudo yum update -y && sudo shutdown -r now
 	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-	echo "#                    使用sudo：{$UserName}重新登录                #"
+	echo "#                    使用sudo：{$UserName}重新登录                   #"
 	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 	reboot
-}
-
-function install_caddy(){
-	yum install -y unzip zip
-	echo -e "是否需要手动检测系统环境"
-	read -p "需要检测请输入‘y’(回车默认为不检测):" CheckSystem
-	if [[ $CheckSystem == "y" ]]
-	then
-		check_caddy_sys
-	else
-		#wget https://raw.githubusercontent.com/ssrosx/caddy/master/caddy.sh -O - -o /dev/null|bash
-		#caddy install
-		curl https://getcaddy.com | bash -s personal
-		sudo setcap 'cap_net_bind_service=+ep' /usr/local/bin/caddy
-		sudo useradd -r -d /var/www -M -s /sbin/nologin caddy
-		read -p "请输入域名(如ssrosx.com):" DomainName
-		read -p "请输入邮箱(如xxx@xxx.xxx):" TlsEmail
-		sudo mkdir -p /var/www/$DomainName
-		sudo chown -R caddy:caddy /var/www
-		sudo mkdir /etc/ssl/caddy
-		sudo chown -R caddy:root /etc/ssl/caddy
-		sudo chmod 0770 /etc/ssl/caddy
-		sudo mkdir /etc/caddy
-		sudo chown -R root:caddy /etc/caddy
-		sudo touch /etc/caddy/Caddyfile
-		sudo chown caddy:caddy /etc/caddy/Caddyfile
-		sudo chmod 444 /etc/caddy/Caddyfile
-cat <<EOF | sudo tee -a /etc/caddy/Caddyfile
-$DomainName www.$DomainName {
-root /var/www/$DomainName
-gzip
-tls $TlsEmail
-}
-EOF
-		wget -N -P /etc/systemd/system https://raw.githubusercontent.com/ssrosx/caddy/master/caddy.service
-		sudo systemctl daemon-reload
-		sudo systemctl start caddy.service
-		sudo systemctl enable caddy.service
-		sudo firewall-cmd --permanent --zone=public --add-service=http 
-		sudo firewall-cmd --permanent --zone=public --add-service=https
-		sudo firewall-cmd --reload
-
-		cd /var/www/$DomainName
-		wget https://raw.githubusercontent.com/ssrosx/caddy/master/web_demo.zip
-		unzip web_demo.zip
-		sudo systemctl restart caddy.service
-	fi
 }
 
 function install_sql_only(){
@@ -457,22 +411,22 @@ check_system
 sleep 2
 echo "#############################################################################"
 echo "#                      欢迎使用一键安装ssrosx和节点脚本。                 #"
-echo "#                                                                      #"
-echo "# 请选择您想要搭建的脚本:                                                #"
-echo "#                                                                      #"
+echo "#                                                                     #"
+echo "#     请选择您想要搭建的脚本:                                            #"
+echo "#                                                                     #"
 echo "# 1.  安装ssrosx前端面板(无节点-带mysql-需选mysql版本)                    #"
 echo "# 2.  安装ssrosx独立前端面板(无节点-无mysql-mysql选：0)                   #"                                                                   #"
 echo "# 3.  安装独立数据库(只需选mysql版本，其余都选：0)                         #" 
-echo "# 4.  安装Caddy Web Server                                             #"
-echo "# 5.  安装ssrosx节点(可单独搭建)                                         #"
+echo "# 4.  搭建Caddy Web Server环境                                         #"
+echo "# 5.  安装ssrosx节点(可单独搭建)                                        #"
 echo "# 6.  搭建BBR加速                                                      #"
 echo "# 7.  搭建锐速加速                                                      #"
-echo "# 8.  ssrosx升级脚本                                                    #"
-echo "# 9.  日志分析（仅支持单机单节点）                                         #"
+echo "# 8.  ssrosx升级脚本                                                   #"
+echo "# 9.  日志分析（仅支持单机单节点）                                        #"
 echo "# 10. 更改数据库密码(仅适用于已搭建前端)                                   #" 
-echo "#                                                                      #"
-echo "#    PS:建议请先搭建加速再搭建ssrosx相关。                                 #"
-echo "#    此脚本仅适用于Centos 7. X 64位 系统                                  #"
+echo "#                                                                     #"
+echo "#    PS:建议请先搭建加速再搭建ssrosx相关。                                #"
+echo "#    此脚本仅适用于Centos 7. X 64位 系统                                 #"
 echo "#############################################################################"
 echo
 read num
@@ -487,7 +441,7 @@ then
 install_sql_only
 elif [[ $num == "4" ]]
 then
-install_caddy
+install_caddy_system
 elif [[ $num == "5" ]]
 then
 install_node
