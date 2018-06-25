@@ -386,7 +386,7 @@ function install_caddy_system(){
 	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 	echo "#                    使用sudo：{$UserName}重新登录                   #"
 	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-	exit
+	reboot
 }
 
 function install_sql_only(){

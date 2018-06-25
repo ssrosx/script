@@ -3,7 +3,6 @@ function install_caddy(){
 	#yum install -y unzip zip
 	#wget https://raw.githubusercontent.com/ssrosx/caddy/master/caddy.sh -O - -o /dev/null|bash
 	#caddy install
-	yum install -y unzip zip
 	echo -e "是否需要更新系统"
 	read -p "需要更新请输入‘y’(回车默认不更新):" UpdateSystem
 	if [[ $UpdateSystem == "y" ]]
@@ -11,6 +10,7 @@ function install_caddy(){
 		sudo yum install epel-release -y
 		sudo yum update -y && sudo shutdown -r now
 	else
+		sudo yum install unzip zip -y
 		curl https://getcaddy.com | bash -s personal
 		sudo setcap 'cap_net_bind_service=+ep' /usr/local/bin/caddy
 		sudo useradd -r -d /var/www -M -s /sbin/nologin caddy
@@ -33,7 +33,8 @@ gzip
 tls $TlsEmail
 }
 EOF
-		wget -N -P /etc/systemd/system https://raw.githubusercontent.com/ssrosx/caddy/master/caddy.service
+		sudo wget https://raw.githubusercontent.com/ssrosx/caddy/master/caddy.service
+		sudo mv caddy.service /etc/systemd/system
 		sudo systemctl daemon-reload
 		sudo systemctl start caddy.service
 		sudo systemctl enable caddy.service
@@ -42,13 +43,14 @@ EOF
 		sudo firewall-cmd --reload
 
 		cd /var/www/$DomainName
-		wget https://raw.githubusercontent.com/ssrosx/caddy/master/web_demo.zip
-		unzip web_demo.zip
+		sudo wget https://raw.githubusercontent.com/ssrosx/caddy/master/web_demo.zip
+		sudo unzip web_demo.zip
 		sudo systemctl restart caddy.service
 		echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-		echo "#         打开http://$DomainName or https://$DomainName             #"
+		echo "#         打开http://$DomainName or https://$DomainName            #"
+		echo "#         打开http://www.$DomainName or https://www.$DomainName    #"
 		echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-		reboot
+		sudo shutdown -r now
 	fi
 }
 
