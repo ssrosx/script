@@ -382,11 +382,11 @@ function install_caddy_system(){
 	chmod u-w /etc/sudoers
 	systemctl restart sshd.service
 	passwd  $UserName
-	sleep 3
+	sleep 2
 	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 	echo "#                    使用sudo：{$UserName}重新登录                   #"
 	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-	logout
+	exit
 }
 
 function install_sql_only(){
