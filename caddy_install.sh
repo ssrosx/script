@@ -3,6 +3,7 @@ function install_caddy(){
 	#yum install -y unzip zip
 	#wget https://raw.githubusercontent.com/ssrosx/caddy/master/caddy.sh -O - -o /dev/null|bash
 	#caddy install
+	yum install -y unzip zip
 	echo -e "是否需要更新系统"
 	read -p "需要更新请输入‘y’(回车默认不更新):" UpdateSystem
 	if [[ $UpdateSystem == "y" ]]
