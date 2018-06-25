@@ -375,17 +375,17 @@ function install_caddy_system(){
 	read -p "请输入要添加的用户命(回车默认为ssrosx):" UserName
 	UserName=${UserName:-"ssrosx"}
 	adduser $UserName
-	passwd  $UserName
 	chmod u+w /etc/sudoers
 	echo "# Allow members of group sudo to execute any command" >> /etc/sudoers
 	echo "%sudo   ALL=(ALL:ALL) ALL" >> /etc/sudoers
 	chmod u-w /etc/sudoers
 	systemctl restart sshd.service
+	passwd  $UserName
 	sleep 1
 	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 	echo "#                    使用sudo：{$UserName}重新登录                   #"
 	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-	reboot
+	logout
 }
 
 function install_sql_only(){
