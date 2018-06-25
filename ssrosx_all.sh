@@ -431,7 +431,7 @@ EOF
 		wget https://raw.githubusercontent.com/ssrosx/caddy/master/web_demo.zip
 		unzip web_demo.zip
 		sudo systemctl restart caddy.service
-	if
+	fi
 }
 
 function install_sql_only(){
