@@ -45,6 +45,7 @@ EOF
 		cd /var/www/$DomainName
 		sudo wget https://raw.githubusercontent.com/ssrosx/caddy/master/web_demo.zip
 		sudo unzip web_demo.zip
+		sudo rm -rf web_demo.zip
 		sudo systemctl restart caddy.service
 		echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 		echo "#         打开http://$DomainName or https://$DomainName            #"
