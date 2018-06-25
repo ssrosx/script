@@ -1,17 +1,4 @@
 #!/bin/bash
-#Time: 2018-4-14 10:10:41
-#更新日志：
-#2018-5-13 11:31:59
-#增加系统检测，避免错误
-
-#2018-5-7 13:19:52
-#修复CyMySQL
-
-#2018-4-14 10:12:57
-#1.采用最新官网生产版搭建，避免不必要的错误
-#2.优化lnmp的搭建
-#3.修复搭建失败
-#4.数据库采用端口888访问
 [ $(id -u) != "0" ] && { echo "错误: 您必须以root用户运行此脚本"; exit 1; }
 function check_system(){
 	if [[ -f /etc/redhat-release ]]; then
@@ -38,7 +25,97 @@ function check_system(){
 	exit 0;
 	fi
 }
-function install_ssrosx(){
+
+function install_ssrosx_nosql(){
+	yum -y remove httpd
+	yum install -y unzip zip git
+	#自动选择下载节点
+	GIT='raw.githubusercontent.com'
+	MY='gitee.com'
+	GIT_PING=`ping -c 1 -w 1 $GIT|grep time=|awk '{print $7}'|sed "s/time=//"`
+	MY_PING=`ping -c 1 -w 1 $MY|grep time=|awk '{print $7}'|sed "s/time=//"`
+	echo "$GIT_PING $GIT" > ping.pl
+	echo "$MY_PING $MY" >> ping.pl
+	fileinfo=`sort -V ping.pl|sed -n '1p'|awk '{print $2}'`
+	if [ "$fileinfo" == "$GIT" ];then
+		fileinfo='https://raw.githubusercontent.com/ssrosx/script/master/fileinfo.zip'
+	else
+		fileinfo='https://raw.githubusercontent.com/ssrosx/script/master/fileinfo.zip'
+	fi
+	rm -f ping.pl	
+	 wget -c --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/lnmp1.4.zip && unzip lnmp1.4.zip && rm -rf lnmp1.4.zip && cd lnmp1.4 && chmod +x install_web.sh && ./install_web.sh
+	clear
+	#安装fileinfo必须组件
+	cd /root && wget --no-check-certificate $fileinfo
+	File="/root/fileinfo.zip"
+    if [ ! -f "$File" ]; then  
+    echo "fileinfo组件下载失败，请检查/root/fileinfo.zip"
+	exit 0;
+	else
+    unzip fileinfo.zip
+    fi
+	cd /root/fileinfo && /usr/local/php/bin/phpize && ./configure --with-php-config=/usr/local/php/bin/php-config --with-fileinfo && make && make install
+	cd /home/wwwroot/
+	cp -r default/phpmyadmin/ .  #复制数据库
+	cd default
+	rm -rf index.html
+	#获取git最新master版文件 带有风险
+	#git clone https://github.com/ssrpanel/SSRPanel.git
+	#cd SSRPanel
+	#git submodule update --init --recursive
+	#mv * .[^.]* ..&& cd /home/wwwroot/default && rm -rf SSRPanel
+
+	git clone https://github.com/ssrosx/ssrosx.git
+	cd ssrosx
+	git submodule update --init --recursive
+	mv * .[^.]* ..&& cd /home/wwwroot/default && rm -rf ssrosx
+	
+	#获取git最新released版文件 适用于生产环境
+	#ssrpanel_new_ver=$(wget --no-check-certificate -qO- https://api.github.com/repos/ssrpanel/SSRPanel/releases | grep -o '"tag_name": ".*"' |head -n 1| sed 's/"//g;s/v//g' | sed 's/tag_name: //g')
+	#wget -c --no-check-certificate "https://github.com/ssrpanel/SSRPanel/archive/${ssrpanel_new_ver}.tar.gz"
+	#tar zxvf "${ssrpanel_new_ver}.tar.gz" && cd SSRPanel-* && mv * .[^.]* ..&& cd /home/wwwroot/default && rm -rf "${ssrpanel_new_ver}.tar.gz"
+	#替换数据库配置
+	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/app.php
+	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/database.php
+	wget -N -P /usr/local/php/etc/ https://raw.githubusercontent.com/ssrosx/script/master/php.ini
+	wget -N -P /usr/local/nginx/conf/ https://raw.githubusercontent.com/ssrosx/script/master/nginx.conf
+	service nginx restart
+
+	#安装依赖
+	cd /home/wwwroot/default/
+	php composer.phar install
+	php artisan key:generate
+    chown -R www:www storage/
+    chmod -R 777 storage/
+	chattr -i .user.ini
+	mv .user.ini public
+	chown -R root:root *
+	chmod -R 777 *
+	chown -R www:www storage
+	chattr +i public/.user.ini
+	service nginx restart
+    service php-fpm restart
+	#开启日志监控
+	yum -y install vixie-cron crontabs
+	#rm -rf /var/spool/cron/root
+	#echo '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1' >> /var/spool/cron/root
+	rm -rf /var/spool/cron/www
+	echo '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1' >> /var/spool/cron/www
+	#或者执行 crontab -e -u www 在文件中加入 '* * * * * php /home/wwwroot/default/artisan schedule:run >> /dev/null 2>&1'
+	service crond restart
+	#修复数据库
+	# mv /home/wwwroot/default/phpmyadmin/ /home/wwwroot/default/public/
+	# cd /home/wwwroot/default/public/phpmyadmin
+	# chmod -R 755 *
+	lnmp restart
+	IPAddress=`wget http://members.3322.org/dyndns/getip -O - -q ; echo`;
+	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+	echo "#    一键搭建前端面板完成，请访问http://${IPAddress}~ 查看         #"
+	echo "#    需配置config/database.php中connections-mysql-host         #"
+	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+}
+
+function install_ssrosx_sql(){
 	yum -y remove httpd
 	yum install -y unzip zip git
 	#自动选择下载节点
@@ -139,6 +216,7 @@ EOF
 	echo "#    一键搭建前端面板完成，请访问http://${IPAddress}~ 查看         #"
 	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 }
+
 function install_log(){
     myFile="/root/shadowsocksr/ssserver.log"  
 	if [ ! -f "$myFile" ]; then  
@@ -153,6 +231,7 @@ function install_log(){
 	echo "日志分析（仅支持单机单节点） - 安装成功"
     fi
 }
+
 function change_password(){
 	echo -e "\033[31m注意:必须正确填写数据库密码，否则只能手动修改。\033[0m"
 	read -p "请输入数据库密码(初始密码为root):" Default_password
@@ -177,8 +256,8 @@ EOF
 	echo "重新启动配置以生效..."
 	init 6
     fi
-
 }
+
 function install_ssr(){
 	yum -y update
 	yum -y install git 
@@ -230,6 +309,7 @@ function install_ssr(){
 	systemctl stop firewalld.service
 	systemctl disable firewalld.service
 }
+
 function install_node(){
 	clear
 	echo
@@ -280,12 +360,94 @@ function install_node(){
 	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 	reboot
 }
+
 function install_BBR(){
      wget --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/bbr.sh&&chmod +x bbr.sh&&./bbr.sh
 }
+
 function install_RS(){
      wget -N --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/serverspeeder.sh && bash serverspeeder.sh
 }
+
+function check_caddy_sys(){
+	clear
+	yum install sudo -y
+	read -p "请输入要添加的用户命(回车默认为ssrosx):" UserName
+	UserName=${UserName:-"ssrosx"}
+	adduser $UserName
+	passwd  $UserName
+	echo "# Allow members of group sudo to execute any command" >> /etc/sudoers
+	echo "%sudo   ALL=(ALL:ALL) ALL" >> /etc/sudoers
+	systemctl restart sshd.service
+	sudo yum install epel-release -y
+	sudo yum update -y && sudo shutdown -r now
+	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+	echo "#                    使用sudo：{$UserName}重新登录                #"
+	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+	reboot
+}
+
+function install_caddy(){
+	yum install -y unzip zip
+	echo -e "是否需要手动检测系统环境"
+	read -p "需要检测请输入‘y’(回车默认为不检测):" CheckSystem
+	if [[ $CheckSystem == "y" ]]
+	then
+		check_caddy_sys
+	else
+		#wget https://raw.githubusercontent.com/ssrosx/caddy/master/caddy.sh -O - -o /dev/null|bash
+		#caddy install
+		curl https://getcaddy.com | bash -s personal
+		sudo setcap 'cap_net_bind_service=+ep' /usr/local/bin/caddy
+		sudo useradd -r -d /var/www -M -s /sbin/nologin caddy
+		read -p "请输入域名(如ssrosx.com):" DomainName
+		read -p "请输入邮箱(如xxx@xxx.xxx):" TlsEmail
+		sudo mkdir -p /var/www/$DomainName
+		sudo chown -R caddy:caddy /var/www
+		sudo mkdir /etc/ssl/caddy
+		sudo chown -R caddy:root /etc/ssl/caddy
+		sudo chmod 0770 /etc/ssl/caddy
+		sudo mkdir /etc/caddy
+		sudo chown -R root:caddy /etc/caddy
+		sudo touch /etc/caddy/Caddyfile
+		sudo chown caddy:caddy /etc/caddy/Caddyfile
+		sudo chmod 444 /etc/caddy/Caddyfile
+cat <<EOF | sudo tee -a /etc/caddy/Caddyfile
+$DomainName www.$DomainName {
+root /var/www/$DomainName
+gzip
+tls $TlsEmail
+}
+EOF
+		wget -N -P /etc/systemd/system https://raw.githubusercontent.com/ssrosx/caddy/master/caddy.service
+		sudo systemctl daemon-reload
+		sudo systemctl start caddy.service
+		sudo systemctl enable caddy.service
+		sudo firewall-cmd --permanent --zone=public --add-service=http 
+		sudo firewall-cmd --permanent --zone=public --add-service=https
+		sudo firewall-cmd --reload
+
+		cd /var/www/$DomainName
+		wget https://raw.githubusercontent.com/ssrosx/caddy/master/web_demo.zip
+		unzip web_demo.zip
+		sudo systemctl restart caddy.service
+	if
+}
+
+function install_sql_only(){
+	yum install -y unzip zip git
+	wget -c --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/lnmp1.4.zip && unzip lnmp1.4.zip && rm -rf lnmp1.4.zip && cd lnmp1.4 && chmod +x install_db.sh && ./install_db.sh
+	clear
+	cd /root && wget https://raw.githubusercontent.com/ssrosx/ssrosx/master/sql/db.sql
+mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
+create database ssrosx;
+use ssrosx;
+source /root/db.sql;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+flush privileges;
+EOF
+}
+
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 ulimit -c 0
@@ -295,39 +457,54 @@ check_system
 sleep 2
 echo "#############################################################################"
 echo "#                      欢迎使用一键安装ssrosx和节点脚本。                 #"
-echo "# 请选择您想要搭建的脚本:                                                  #"
-echo "# 1.  一键安装ssrosx前端面板(不包括节点)                                  #"
-echo "# 2.  一键安装ssrosx节点(可单独搭建)                                     #"
-echo "# 3.  一键搭建BBR加速                                                    #"
-echo "# 4.  一键搭建锐速加速                                                    #"
-echo "# 5.  ssrosx官方升级脚本(可能没什么luan用)                               #"
-echo "# 6.  日志分析（仅支持单机单节点）                                          #"
-echo "# 7.  一键更改数据库密码(仅适用于已搭建前端)                                 #" 
-echo "#    PS:建议请先搭建加速再搭建ssrosx相关。                               #"
+echo "#                                                                      #"
+echo "# 请选择您想要搭建的脚本:                                                #"
+echo "#                                                                      #"
+echo "# 1.  安装ssrosx前端面板(无节点-带mysql-需选mysql版本)                    #"
+echo "# 2.  安装ssrosx独立前端面板(无节点-无mysql-mysql选：0)                   #"                                                                   #"
+echo "# 3.  安装独立数据库(只需选mysql版本，其余都选：0)                         #" 
+echo "# 4.  安装Caddy Web Server                                             #"
+echo "# 5.  安装ssrosx节点(可单独搭建)                                         #"
+echo "# 6.  搭建BBR加速                                                      #"
+echo "# 7.  搭建锐速加速                                                      #"
+echo "# 8.  ssrosx升级脚本                                                    #"
+echo "# 9.  日志分析（仅支持单机单节点）                                         #"
+echo "# 10. 更改数据库密码(仅适用于已搭建前端)                                   #" 
+echo "#                                                                      #"
+echo "#    PS:建议请先搭建加速再搭建ssrosx相关。                                 #"
 echo "#    此脚本仅适用于Centos 7. X 64位 系统                                  #"
 echo "#############################################################################"
 echo
 read num
 if [[ $num == "1" ]]
 then
-install_ssrosx
+install_ssrosx_sql
 elif [[ $num == "2" ]]
 then
-install_node
+install_ssrosx_nosql
 elif [[ $num == "3" ]]
 then
-install_BBR
+install_sql_only
 elif [[ $num == "4" ]]
 then
-install_RS
+install_caddy
 elif [[ $num == "5" ]]
+then
+install_node
+elif [[ $num == "6" ]]
+then
+install_BBR
+elif [[ $num == "7" ]]
+then
+install_RS
+elif [[ $num == "8" ]]
 then
 cd /home/wwwroot/default/
 chmod a+x update.sh && sh update.sh
-elif [[ $num == "6" ]]
+elif [[ $num == "9" ]]
 then
 install_log
-elif [[ $num == "7" ]]
+elif [[ $num == "10" ]]
 then
 change_password
 else 
