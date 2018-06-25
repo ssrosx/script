@@ -380,8 +380,6 @@ function install_caddy_system(){
 	echo "# Allow members of group sudo to execute any command" >> /etc/sudoers
 	echo "%sudo   ALL=(ALL:ALL) ALL" >> /etc/sudoers
 	systemctl restart sshd.service
-	sudo yum install epel-release -y
-	sudo yum update -y && sudo shutdown -r now
 	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 	echo "#                    使用sudo：{$UserName}重新登录                   #"
 	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
