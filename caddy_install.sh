@@ -34,7 +34,7 @@ function install_caddy(){
 		echo -e "2 ： 使用域名安装"
 		read -p "请选择安装类型（默认IP安装）:" InstallType
 		InstallType=${InstallType:-"ip"}
-		if [[ $InstallType == "ip" ]]
+		if [[ $InstallType == "1" ]]
 		then
 			yum install curl -y
 			ip=`curl ip.3322.net`
