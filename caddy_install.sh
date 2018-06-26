@@ -29,7 +29,7 @@ function install_caddy(){
 		sudo touch /etc/caddy/Caddyfile
 		sudo chown caddy:caddy /etc/caddy/Caddyfile
 		sudo chmod 444 /etc/caddy/Caddyfile
-		rndport=$(rand 100 500)
+		rndport=$(rand 10000 50000)
 		echo -e "1 ： 使用IP安装"
 		echo -e "2 ： 使用域名安装"
 		read -p "请选择安装类型（默认IP安装）:" InstallType
