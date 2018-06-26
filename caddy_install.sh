@@ -55,27 +55,28 @@ gzip
 tls $TlsEmail
 }
 EOF
-			sudo wget https://raw.githubusercontent.com/ssrosx/caddy/master/caddy.service
-			sudo mv caddy.service /etc/systemd/system
-			sudo systemctl daemon-reload
-			sudo systemctl start caddy.service
-			sudo systemctl enable caddy.service
-			sudo firewall-cmd --permanent --zone=public --add-service=http 
-			sudo firewall-cmd --permanent --zone=public --add-service=https
-			sudo firewall-cmd --reload
-
-			cd /var/www/$DomainName
-			sudo wget https://raw.githubusercontent.com/ssrosx/caddy/master/web_demo.zip
-			sudo unzip web_demo.zip
-			sudo rm -rf web_demo.zip
-			sudo systemctl restart caddy.service
-			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-			echo "#         打开http://$DomainName or https://$DomainName            #"
-			echo "#         打开http://www.$DomainName or https://www.$DomainName    #"
-			echo "#         在配置的时候请输入端口：$rndport                            #"
-			echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-			sudo shutdown -r now
 		fi
+		sudo wget https://raw.githubusercontent.com/ssrosx/caddy/master/caddy.service
+		sudo mv caddy.service /etc/systemd/system
+		sudo systemctl daemon-reload
+		sudo systemctl start caddy.service
+		sudo systemctl enable caddy.service
+		sudo firewall-cmd --permanent --zone=public --add-service=http 
+		sudo firewall-cmd --permanent --zone=public --add-service=https
+		sudo firewall-cmd --reload
+
+		cd /var/www/$DomainName
+		sudo wget https://raw.githubusercontent.com/ssrosx/caddy/master/web_demo.zip
+		sudo unzip web_demo.zip
+		sudo rm -rf web_demo.zip
+		sudo systemctl restart caddy.service
+		echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+		echo "#         打开http://$DomainName or https://$DomainName            #"
+		echo "#         打开http://www.$DomainName or https://www.$DomainName    #"
+		echo "#         在配置的时候请输入端口：$rndport                            #"
+		echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+		sudo shutdown -r now
+		
 	fi
 }
 
