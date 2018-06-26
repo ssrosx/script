@@ -75,10 +75,25 @@ function install_ssrosx_nosql(){
 	#wget -c --no-check-certificate "https://github.com/ssrpanel/SSRPanel/archive/${ssrpanel_new_ver}.tar.gz"
 	#tar zxvf "${ssrpanel_new_ver}.tar.gz" && cd SSRPanel-* && mv * .[^.]* ..&& cd /home/wwwroot/default && rm -rf "${ssrpanel_new_ver}.tar.gz"
 	#替换数据库配置
+	read -p "请输入您的对接数据库IP(默认：本地IP地址):" Userip
+	read -p "请输入数据库名称(默认：ssrosx):" Dbname
+	read -p "请输入数据库端口(默认：3306):" Dbport
+	read -p "请输入数据库帐户(默认：root):" Dbuser
+	read -p "请输入数据库密码(默认：root):" Dbpassword
+	Userip=${Userip:-"127.0.0.1"}
+	Dbname=${Dbname:-"ssrosx"}
+	Dbport=${Dbport:-"3306"}
+	Dbuser=${Dbuser:-"root"}
+	Dbpassword=${Dbpassword:-"root"}
 	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/app.php
 	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/database.php
 	wget -N -P /usr/local/php/etc/ https://raw.githubusercontent.com/ssrosx/script/master/php.ini
 	wget -N -P /usr/local/nginx/conf/ https://raw.githubusercontent.com/ssrosx/script/master/nginx.conf
+	sed -i "s#Userip#${Userip}#" /home/wwwroot/default/config/database.php
+	sed -i "s#Dbname#${Dbname}#" /home/wwwroot/default/config/database.php
+	sed -i "s#Dbport#${Dbport}#" /home/wwwroot/default/config/database.php
+	sed -i "s#Dbuser#${Dbuser}#" /home/wwwroot/default/config/database.php
+	sed -i "s#Dbpassword#${Dbpassword}#" /home/wwwroot/default/config/database.php
 	service nginx restart
 
 	#安装依赖
@@ -164,10 +179,25 @@ function install_ssrosx_sql(){
 	#wget -c --no-check-certificate "https://github.com/ssrpanel/SSRPanel/archive/${ssrpanel_new_ver}.tar.gz"
 	#tar zxvf "${ssrpanel_new_ver}.tar.gz" && cd SSRPanel-* && mv * .[^.]* ..&& cd /home/wwwroot/default && rm -rf "${ssrpanel_new_ver}.tar.gz"
 	#替换数据库配置
+	read -p "请输入您的对接数据库IP(默认：127.0.0.1):" Userip
+	read -p "请输入数据库名称(默认：ssrosx):" Dbname
+	read -p "请输入数据库端口(默认：3306):" Dbport
+	read -p "请输入数据库帐户(默认：root):" Dbuser
+	read -p "请输入数据库密码(默认：root):" Dbpassword
+	Userip=${Userip:-"127.0.0.1"}
+	Dbname=${Dbname:-"ssrosx"}
+	Dbport=${Dbport:-"3306"}
+	Dbuser=${Dbuser:-"root"}
+	Dbpassword=${Dbpassword:-"root"}
 	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/app.php
 	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/database.php
 	wget -N -P /usr/local/php/etc/ https://raw.githubusercontent.com/ssrosx/script/master/php.ini
 	wget -N -P /usr/local/nginx/conf/ https://raw.githubusercontent.com/ssrosx/script/master/nginx.conf
+	sed -i "s#Userip#${Userip}#" /home/wwwroot/default/config/database.php
+	sed -i "s#Dbname#${Dbname}#" /home/wwwroot/default/config/database.php
+	sed -i "s#Dbport#${Dbport}#" /home/wwwroot/default/config/database.php
+	sed -i "s#Dbuser#${Dbuser}#" /home/wwwroot/default/config/database.php
+	sed -i "s#Dbpassword#${Dbpassword}#" /home/wwwroot/default/config/database.php
 	service nginx restart
 	#设置数据库
 	#mysql -uroot -proot -e"create database ssrosx;" 
@@ -305,6 +335,9 @@ function install_ssr(){
 	sed -i "s#Dbpassword#${Dbpassword}#" /root/shadowsocksr/usermysql.json
 	sed -i "s#Dbname#${Dbname}#" /root/shadowsocksr/usermysql.json
 	sed -i "s#UserNODE_ID#${UserNODE_ID}#" /root/shadowsocksr/usermysql.json
+	sed -i "s#ServerPort#${ServerPort}#" /root/shadowsocksr/user-config.json
+	sed -i "s#PasswordValue#${PasswordValue}#" /root/shadowsocksr/user-config.json
+	sed -i "s#WebPort#${WebPort}#" /root/shadowsocksr/user-config.json
 	yum -y install lsof lrzsz python-devel libffi-devel openssl-devel iptables
 	systemctl stop firewalld.service
 	systemctl disable firewalld.service
@@ -319,12 +352,18 @@ function install_node(){
 	[ $(id -u) != "0" ] && { echo "错误: 您必须以root用户运行此脚本"; exit 1; }
 	echo -e "如果你不知道，你可以直接回车。"
 	echo -e "如果连接失败，请检查数据库远程访问是否打开。"
-	read -p "请输入您的对接数据库IP(回车默认为本地IP地址):" Userip
-	read -p "请输入数据库名称(回车默认为ssrosx):" Dbname
-	read -p "请输入数据库端口(回车默认为3306):" Dbport
-	read -p "请输入数据库帐户(回车默认为root):" Dbuser
-	read -p "请输入数据库密码(回车默认为root):" Dbpassword
-	read -p "请输入您的节点编号(回车默认为1):  " UserNODE_ID
+	read -p "请输入您的对接数据库IP(默认：本地IP地址):" Userip
+	read -p "请输入数据库名称(默认：ssrosx):" Dbname
+	read -p "请输入数据库端口(默认：3306):" Dbport
+	read -p "请输入数据库帐户(默认：root):" Dbuser
+	read -p "请输入数据库密码(默认：root):" Dbpassword
+	read -p "请输入您的节点编号(默认：1):  " UserNODE_ID
+	read -p "请输入SSR监听端口(默认：443):" ServerPort
+	read -p "请输入SSR密码(默认：m):" PasswordValue
+	read -p "请输入Web端口(默认：2333):" WebPort
+	ServerPort=${ServerPort:-"443"}
+	PasswordValue=${PasswordValue:-"m"}
+	WebPort=${WebPort:-"2333"}
 	IPAddress=`wget http://members.3322.org/dyndns/getip -O - -q ; echo`;
 	Userip=${Userip:-"${IPAddress}"}
 	Dbname=${Dbname:-"ssrosx"}
@@ -372,7 +411,7 @@ function install_RS(){
 function install_caddy_system(){
 	clear
 	yum install sudo -y
-	read -p "请输入要添加的用户命(回车默认为ssrosx):" UserName
+	read -p "请输入要添加的用户命(默认：ssrosx):" UserName
 	UserName=${UserName:-"ssrosx"}
 	adduser $UserName
 	usermod -aG wheel $UserName
