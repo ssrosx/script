@@ -109,7 +109,7 @@ function install_ssrosx_nosql(){
 		vi /etc/redis.conf
 		#运行redis
 		wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/cache.php
-		sed -i "s#CacheType#${CacheType}#" /home/wwwroot/default/config/database.php
+		sed -i "s#CacheType#${CacheType}#" /home/wwwroot/default/config/cache.php
 		/usr/local/bin/redis-server /etc/redis.conf
 	fi
 	service nginx restart
@@ -231,7 +231,7 @@ function install_ssrosx_sql(){
 		vi /etc/redis.conf
 		#运行redis
 		wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/cache.php
-		sed -i "s#CacheType#${CacheType}#" /home/wwwroot/default/config/database.php
+		sed -i "s#CacheType#${CacheType}#" /home/wwwroot/default/config/cache.php
 		/usr/local/bin/redis-server /etc/redis.conf
 	fi
 	service nginx restart
