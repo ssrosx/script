@@ -94,6 +94,24 @@ function install_ssrosx_nosql(){
 	sed -i "s#Dbport#${Dbport}#" /home/wwwroot/default/config/database.php
 	sed -i "s#Dbuser#${Dbuser}#" /home/wwwroot/default/config/database.php
 	sed -i "s#Dbpassword#${Dbpassword}#" /home/wwwroot/default/config/database.php
+	read -p "输入使用的缓存类型 ‘redis’，‘file’(默认：redis):" CacheType
+	CacheType=${CacheType:-"redis"}
+	if [ "$CacheType" == "$redis" ];then
+		#install redis
+		cd /root && wget http://download.redis.io/releases/redis-4.0.8.tar.gz
+		tar zxvf redis-4.0.8.tar.gz
+		cd redis-4.0.8
+		make && make install
+		#复制配置
+		cp redis.conf /etc/redis.conf
+		#编辑 /etc/redis.conf 中的daemon no 改为 daemon yes
+		echo "编辑redis.conf 输入‘/daemon’ 查找 no -> yes :wq!保存"
+		vi /etc/redis.conf
+		#运行redis
+		wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/cache.php
+		sed -i "s#CacheType#${CacheType}#" /home/wwwroot/default/config/database.php
+		/usr/local/bin/redis-server /etc/redis.conf
+	fi
 	service nginx restart
 
 	#安装依赖
@@ -198,6 +216,24 @@ function install_ssrosx_sql(){
 	sed -i "s#Dbport#${Dbport}#" /home/wwwroot/default/config/database.php
 	sed -i "s#Dbuser#${Dbuser}#" /home/wwwroot/default/config/database.php
 	sed -i "s#Dbpassword#${Dbpassword}#" /home/wwwroot/default/config/database.php
+	read -p "输入使用的缓存类型 ‘redis’，‘file’(默认：redis):" CacheType
+	CacheType=${CacheType:-"redis"}
+	if [ "$CacheType" == "$redis" ];then
+		#install redis
+		cd /root && wget http://download.redis.io/releases/redis-4.0.8.tar.gz
+		tar zxvf redis-4.0.8.tar.gz
+		cd redis-4.0.8
+		make && make install
+		#复制配置
+		cp redis.conf /etc/redis.conf
+		#编辑 /etc/redis.conf 中的daemon no 改为 daemon yes
+		echo "编辑redis.conf 输入‘/daemon’ 查找 no -> yes :wq!保存"
+		vi /etc/redis.conf
+		#运行redis
+		wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/cache.php
+		sed -i "s#CacheType#${CacheType}#" /home/wwwroot/default/config/database.php
+		/usr/local/bin/redis-server /etc/redis.conf
+	fi
 	service nginx restart
 	#设置数据库
 	#mysql -uroot -proot -e"create database ssrosx;" 
