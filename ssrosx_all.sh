@@ -96,7 +96,7 @@ function install_ssrosx_nosql(){
 	sed -i "s#Dbpassword#${Dbpassword}#" /home/wwwroot/default/config/database.php
 	read -p "输入使用的缓存类型 ‘redis’，‘file’(默认：redis):" CacheType
 	CacheType=${CacheType:-"redis"}
-	if [ "$CacheType" == "$redis" ];then
+	if [ "$CacheType" == "redis" ];then
 		#install redis
 		cd /root && wget http://download.redis.io/releases/redis-4.0.8.tar.gz
 		tar zxvf redis-4.0.8.tar.gz
@@ -218,7 +218,7 @@ function install_ssrosx_sql(){
 	sed -i "s#Dbpassword#${Dbpassword}#" /home/wwwroot/default/config/database.php
 	read -p "输入使用的缓存类型 ‘redis’，‘file’(默认：redis):" CacheType
 	CacheType=${CacheType:-"redis"}
-	if [ "$CacheType" == "$redis" ];then
+	if [ "$CacheType" == "redis" ];then
 		#install redis
 		cd /root && wget http://download.redis.io/releases/redis-4.0.8.tar.gz
 		tar zxvf redis-4.0.8.tar.gz
