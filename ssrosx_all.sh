@@ -429,6 +429,8 @@ function install_ssr_only(){
 	#sed -i "s#ServerPort#${ServerPort}#" /root/shadowsocksr/user-config-only.json
 	sed -i "s#PasswordValue#${PasswordValue}#" /root/shadowsocksr/user-config-only.json
 	sed -i "s#WebPort#${WebPort}#" /root/shadowsocksr/user-config-only.json
+	rm -rf /root/shadowsocksr/user-config.json
+	mv /root/shadowsocksr/user-config-only.json /root/shadowsocksr/user-config.json
 	yum -y install lsof lrzsz python-devel libffi-devel openssl-devel iptables
 	systemctl stop firewalld.service
 	systemctl disable firewalld.service

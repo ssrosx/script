@@ -38,6 +38,6 @@
     "udp_timeout": 60,
     "dns_ipv6": false,
     "connect_verbose_info": 1,
-    "redirect": ["*:443#127.0.0.1:WebPort","*:80#127.0.0.1:WebPort"],
+    "redirect": ["*:80#127.0.0.1:WebPort","*:443#127.0.0.1:WebPort"],
     "fast_open": false
 }
