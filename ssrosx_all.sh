@@ -75,25 +75,25 @@ function install_ssrosx_nosql(){
 	#wget -c --no-check-certificate "https://github.com/ssrpanel/SSRPanel/archive/${ssrpanel_new_ver}.tar.gz"
 	#tar zxvf "${ssrpanel_new_ver}.tar.gz" && cd SSRPanel-* && mv * .[^.]* ..&& cd /home/wwwroot/default && rm -rf "${ssrpanel_new_ver}.tar.gz"
 	#替换数据库配置
-	read -p "请输入您的对接数据库IP(默认：本地IP地址):" Userip
-	read -p "请输入数据库名称(默认：ssrosx):" Dbname
-	read -p "请输入数据库端口(默认：3306):" Dbport
-	read -p "请输入数据库帐户(默认：root):" Dbuser
-	read -p "请输入数据库密码(默认：root):" Dbpassword
-	Userip=${Userip:-"127.0.0.1"}
-	Dbname=${Dbname:-"ssrosx"}
-	Dbport=${Dbport:-"3306"}
-	Dbuser=${Dbuser:-"root"}
-	Dbpassword=${Dbpassword:-"root"}
-	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/app.php
-	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/database.php
+	#read -p "请输入您的对接数据库IP(默认：本地IP地址):" Userip
+	#read -p "请输入数据库名称(默认：ssrosx):" Dbname
+	#read -p "请输入数据库端口(默认：3306):" Dbport
+	#read -p "请输入数据库帐户(默认：root):" Dbuser
+	#read -p "请输入数据库密码(默认：root):" Dbpassword
+	#Userip=${Userip:-"127.0.0.1"}
+	#Dbname=${Dbname:-"ssrosx"}
+	#Dbport=${Dbport:-"3306"}
+	#Dbuser=${Dbuser:-"root"}
+	#Dbpassword=${Dbpassword:-"root"}
+	#wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/app.php
+	#wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/database.php
 	wget -N -P /usr/local/php/etc/ https://raw.githubusercontent.com/ssrosx/script/master/php.ini
 	wget -N -P /usr/local/nginx/conf/ https://raw.githubusercontent.com/ssrosx/script/master/nginx.conf
-	sed -i "s#Userip#${Userip}#" /home/wwwroot/default/config/database.php
-	sed -i "s#Dbname#${Dbname}#" /home/wwwroot/default/config/database.php
-	sed -i "s#Dbport#${Dbport}#" /home/wwwroot/default/config/database.php
-	sed -i "s#Dbuser#${Dbuser}#" /home/wwwroot/default/config/database.php
-	sed -i "s#Dbpassword#${Dbpassword}#" /home/wwwroot/default/config/database.php
+	#sed -i "s#Userip#${Userip}#" /home/wwwroot/default/config/database.php
+	#sed -i "s#Dbname#${Dbname}#" /home/wwwroot/default/config/database.php
+	#sed -i "s#Dbport#${Dbport}#" /home/wwwroot/default/config/database.php
+	#sed -i "s#Dbuser#${Dbuser}#" /home/wwwroot/default/config/database.php
+	#sed -i "s#Dbpassword#${Dbpassword}#" /home/wwwroot/default/config/database.php
 	read -p "输入使用的缓存类型 ‘redis’，‘file’(默认：redis):" CacheType
 	CacheType=${CacheType:-"redis"}
 	if [ "$CacheType" == "redis" ];then
@@ -197,25 +197,25 @@ function install_ssrosx_sql(){
 	#wget -c --no-check-certificate "https://github.com/ssrpanel/SSRPanel/archive/${ssrpanel_new_ver}.tar.gz"
 	#tar zxvf "${ssrpanel_new_ver}.tar.gz" && cd SSRPanel-* && mv * .[^.]* ..&& cd /home/wwwroot/default && rm -rf "${ssrpanel_new_ver}.tar.gz"
 	#替换数据库配置
-	read -p "请输入您的对接数据库IP(默认：127.0.0.1):" Userip
-	read -p "请输入数据库名称(默认：ssrosx):" Dbname
-	read -p "请输入数据库端口(默认：3306):" Dbport
-	read -p "请输入数据库帐户(默认：root):" Dbuser
-	read -p "请输入数据库密码(默认：root):" Dbpassword
-	Userip=${Userip:-"127.0.0.1"}
-	Dbname=${Dbname:-"ssrosx"}
-	Dbport=${Dbport:-"3306"}
-	Dbuser=${Dbuser:-"root"}
-	Dbpassword=${Dbpassword:-"root"}
-	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/app.php
-	wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/database.php
+	#read -p "请输入您的对接数据库IP(默认：127.0.0.1):" Userip
+	#read -p "请输入数据库名称(默认：ssrosx):" Dbname
+	#read -p "请输入数据库端口(默认：3306):" Dbport
+	#read -p "请输入数据库帐户(默认：root):" Dbuser
+	#read -p "请输入数据库密码(默认：root):" Dbpassword
+	#Userip=${Userip:-"127.0.0.1"}
+	#Dbname=${Dbname:-"ssrosx"}
+	#Dbport=${Dbport:-"3306"}
+	#Dbuser=${Dbuser:-"root"}
+	#Dbpassword=${Dbpassword:-"root"}
+	#wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/app.php
+	#wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/database.php
 	wget -N -P /usr/local/php/etc/ https://raw.githubusercontent.com/ssrosx/script/master/php.ini
 	wget -N -P /usr/local/nginx/conf/ https://raw.githubusercontent.com/ssrosx/script/master/nginx.conf
-	sed -i "s#Userip#${Userip}#" /home/wwwroot/default/config/database.php
-	sed -i "s#Dbname#${Dbname}#" /home/wwwroot/default/config/database.php
-	sed -i "s#Dbport#${Dbport}#" /home/wwwroot/default/config/database.php
-	sed -i "s#Dbuser#${Dbuser}#" /home/wwwroot/default/config/database.php
-	sed -i "s#Dbpassword#${Dbpassword}#" /home/wwwroot/default/config/database.php
+	#sed -i "s#Userip#${Userip}#" /home/wwwroot/default/config/database.php
+	#sed -i "s#Dbname#${Dbname}#" /home/wwwroot/default/config/database.php
+	#sed -i "s#Dbport#${Dbport}#" /home/wwwroot/default/config/database.php
+	#sed -i "s#Dbuser#${Dbuser}#" /home/wwwroot/default/config/database.php
+	#sed -i "s#Dbpassword#${Dbpassword}#" /home/wwwroot/default/config/database.php
 	read -p "输入使用的缓存类型 ‘redis’，‘file’(默认：redis):" CacheType
 	CacheType=${CacheType:-"redis"}
 	if [ "$CacheType" == "redis" ];then
