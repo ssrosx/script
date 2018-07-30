@@ -105,8 +105,7 @@ function install_ssrosx_nosql(){
 		#复制配置
 		cp redis.conf /etc/redis.conf
 		#编辑 /etc/redis.conf 中的daemon no 改为 daemon yes
-		echo "编辑redis.conf 输入‘/daemon’ 查找 no -> yes :wq!保存"
-		vi /etc/redis.conf
+		echo "vi /etc/redis.conf 编辑redis.conf 输入‘/daemonize’ 查找 no -> yes :wq!保存"
 		#运行redis
 		wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/cache.php
 		sed -i "s#CacheType#${CacheType}#" /home/wwwroot/default/config/cache.php
