@@ -97,6 +97,7 @@ function install_ssrosx_nosql(){
 	read -p "是否需要安装 ‘redis’(默认：n):" InstallRedis
 	InstallRedis=${InstallRedis:-"n"}
 	if [ "$InstallRedis" == "y" ];then
+		mkdir /usr/local/redis
 		#install redis
 		cd /root && wget https://raw.githubusercontent.com/ssrosx/script/master/redis-4.0.8.tar.gz
 		tar zxvf redis-4.0.8.tar.gz
@@ -104,8 +105,9 @@ function install_ssrosx_nosql(){
 		make && make install
 		#配置redis
 		wget -N -P /etc/ https://raw.githubusercontent.com/ssrosx/script/master/redis.conf
+		chmod +x /etc/rc.d/rc.local
 		echo "/usr/local/bin/redis-server /etc/redis.conf" >> /etc/rc.d/rc.local 
-		/usr/local/bin/redis-server /etc/redis.conf
+		redis-server /etc/redis.conf
 	fi
 	service nginx restart
 
@@ -214,6 +216,7 @@ function install_ssrosx_sql(){
 	read -p "是否需要安装 ‘redis’(默认：n):" InstallRedis
 	InstallRedis=${InstallRedis:-"n"}
 	if [ "$InstallRedis" == "y" ];then
+		mkdir /usr/local/redis
 		#install redis
 		cd /root && wget https://raw.githubusercontent.com/ssrosx/script/master/redis-4.0.8.tar.gz
 		tar zxvf redis-4.0.8.tar.gz
@@ -221,8 +224,9 @@ function install_ssrosx_sql(){
 		make && make install
 		#配置redis
 		wget -N -P /etc/ https://raw.githubusercontent.com/ssrosx/script/master/redis.conf
+		chmod +x /etc/rc.d/rc.local
 		echo "/usr/local/bin/redis-server /etc/redis.conf" >> /etc/rc.d/rc.local 
-		/usr/local/bin/redis-server /etc/redis.conf
+		redis-server /etc/redis.conf
 	fi
 	service nginx restart
 	#设置数据库
