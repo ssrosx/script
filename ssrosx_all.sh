@@ -98,17 +98,13 @@ function install_ssrosx_nosql(){
 	InstallRedis=${InstallRedis:-"n"}
 	if [ "$InstallRedis" == "y" ];then
 		#install redis
-		cd /root && wget http://download.redis.io/releases/redis-4.0.8.tar.gz
+		cd /root && wget https://raw.githubusercontent.com/ssrosx/script/master/redis-4.0.8.tar.gz
 		tar zxvf redis-4.0.8.tar.gz
 		cd redis-4.0.8
 		make && make install
-		#复制配置
-		cp redis.conf /etc/redis.conf
-		#编辑 /etc/redis.conf 中的daemon no 改为 daemon yes
-		echo "vi /etc/redis.conf 编辑redis.conf 输入‘/daemonize’ 查找 no -> yes :wq!保存"
-		#运行redis
-		# wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/cache.php
-		# sed -i "s#CacheType#${CacheType}#" /home/wwwroot/default/config/cache.php
+		#配置redis
+		wget -N -P /etc/ https://raw.githubusercontent.com/ssrosx/script/master/redis.conf
+		echo "/usr/local/bin/redis-server /etc/redis.conf" >> /etc/rc.d/rc.local 
 		/usr/local/bin/redis-server /etc/redis.conf
 	fi
 	service nginx restart
@@ -219,18 +215,13 @@ function install_ssrosx_sql(){
 	InstallRedis=${InstallRedis:-"n"}
 	if [ "$InstallRedis" == "y" ];then
 		#install redis
-		cd /root && wget http://download.redis.io/releases/redis-4.0.8.tar.gz
+		cd /root && wget https://raw.githubusercontent.com/ssrosx/script/master/redis-4.0.8.tar.gz
 		tar zxvf redis-4.0.8.tar.gz
 		cd redis-4.0.8
 		make && make install
-		#复制配置
-		cp redis.conf /etc/redis.conf
-		#编辑 /etc/redis.conf 中的daemon no 改为 daemon yes
-		echo "vi /etc/redis.conf 编辑redis.conf 输入‘/daemonize’ 查找 no -> yes :wq!保存"
-		vi /etc/redis.conf
-		#运行redis
-		# wget -N -P /home/wwwroot/default/config/ https://raw.githubusercontent.com/ssrosx/script/master/cache.php
-		# sed -i "s#CacheType#${CacheType}#" /home/wwwroot/default/config/cache.php
+		#配置redis
+		wget -N -P /etc/ https://raw.githubusercontent.com/ssrosx/script/master/redis.conf
+		echo "/usr/local/bin/redis-server /etc/redis.conf" >> /etc/rc.d/rc.local 
 		/usr/local/bin/redis-server /etc/redis.conf
 	fi
 	service nginx restart
@@ -242,9 +233,11 @@ function install_ssrosx_sql(){
 	#mysql -uroot -proot -e"use mysql;"
 	#mysql -uroot -proot -e"GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;"
 	#mysql -uroot -proot -e"flush privileges;"
+read -p "数据数据库名字 sqlname(默认：ssrosx):" SqlName
+SqlName=${SqlName:-"ssrosx"}
 mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
-create database ssrosx;
-use ssrosx;
+create database "$SqlName";
+use "$SqlName";
 source /home/wwwroot/default/sql/db.sql;
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
 flush privileges;
@@ -531,9 +524,11 @@ function install_sql_only(){
 	wget -c --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/lnmp1.4.zip && unzip lnmp1.4.zip && rm -rf lnmp1.4.zip && cd lnmp1.4 && chmod +x install_db.sh && ./install_db.sh
 	clear
 	cd /root && wget https://raw.githubusercontent.com/ssrosx/ssrosx/master/sql/db.sql
+read -p "数据数据库名字 sqlname(默认：ssrosx):" SqlName
+SqlName=${SqlName:-"ssrosx"}
 mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
-create database ssrosx;
-use ssrosx;
+create database "$SqlName";
+use "$SqlName";
 source /root/db.sql;
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
 flush privileges;
