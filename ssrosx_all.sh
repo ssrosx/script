@@ -245,7 +245,7 @@ mysql -hlocalhost -uroot -p$SqlPassword --default-character-set=utf8mb4<<EOF
 create database $SqlName;
 use $SqlName;
 source /home/wwwroot/default/sql/db.sql;
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY $SqlPassword WITH GRANT OPTION;
 flush privileges;
 EOF
 	#安装依赖
@@ -526,7 +526,7 @@ mysql -hlocalhost -uroot -p$SqlPassword --default-character-set=utf8mb4<<EOF
 create database $SqlName;
 use $SqlName;
 source /root/db.sql;
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY $SqlPassword WITH GRANT OPTION;
 flush privileges;
 EOF
 }
