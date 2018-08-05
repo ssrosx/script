@@ -240,8 +240,8 @@ function install_ssrosx_sql(){
 read -p "数据数据库名字 sqlname(默认：ssrosx):" SqlName
 SqlName=${SqlName:-"ssrosx"}
 mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
-create database "$SqlName";
-use "$SqlName";
+create database $SqlName;
+use $SqlName;
 source /home/wwwroot/default/sql/db.sql;
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
 flush privileges;
@@ -531,8 +531,8 @@ function install_sql_only(){
 read -p "数据数据库名字 sqlname(默认：ssrosx):" SqlName
 SqlName=${SqlName:-"ssrosx"}
 mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
-create database "$SqlName";
-use "$SqlName";
+create database $SqlName;
+use $SqlName;
 source /root/db.sql;
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
 flush privileges;
