@@ -237,9 +237,11 @@ function install_ssrosx_sql(){
 	#mysql -uroot -proot -e"use mysql;"
 	#mysql -uroot -proot -e"GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;"
 	#mysql -uroot -proot -e"flush privileges;"
-read -p "数据数据库名字 sqlname(默认：ssrosx):" SqlName
+read -p "数据库名字 sqlname(默认：ssrosx):" SqlName
+read -p "数据库密码 sqlpasswd(默认：root):" SqlPassword
 SqlName=${SqlName:-"ssrosx"}
-mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
+SqlPassword=${SqlPassword:-"root"}
+mysql -hlocalhost -uroot -p$SqlPassword --default-character-set=utf8mb4<<EOF
 create database $SqlName;
 use $SqlName;
 source /home/wwwroot/default/sql/db.sql;
@@ -528,9 +530,11 @@ function install_sql_only(){
 	wget -c --no-check-certificate https://raw.githubusercontent.com/ssrosx/script/master/lnmp1.4.zip && unzip lnmp1.4.zip && rm -rf lnmp1.4.zip && cd lnmp1.4 && chmod +x install_db.sh && ./install_db.sh
 	clear
 	cd /root && wget https://raw.githubusercontent.com/ssrosx/ssrosx/master/sql/db.sql
-read -p "数据数据库名字 sqlname(默认：ssrosx):" SqlName
+read -p "数据库名字 sqlname(默认：ssrosx):" SqlName
+read -p "数据库密码 sqlpasswd(默认：root):" SqlPassword
 SqlName=${SqlName:-"ssrosx"}
-mysql -hlocalhost -uroot -proot --default-character-set=utf8mb4<<EOF
+SqlPassword=${SqlPassword:-"root"}
+mysql -hlocalhost -uroot -p$SqlPassword --default-character-set=utf8mb4<<EOF
 create database $SqlName;
 use $SqlName;
 source /root/db.sql;
