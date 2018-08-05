@@ -308,18 +308,6 @@ use mysql;
 update user set password=passworD("${Change_password}") where user='root';
 flush privileges;
 EOF
-	echo "开始在设置文件中替换数据库信息..."
-	myFile="/root/shadowsocksr/server.py"
-    if [ ! -f "$myFile" ]; then  
-    sed -i "s/'password' => '"${Default_password}"'/'password' => '"${Change_password}"'/g" /home/wwwroot/default/config/database.php
-	echo "数据库密码已完成，请记住。."
-	echo "您设置的密码是:${Change_password}"
-	else
-	sed -i 's/"password": "'${Default_password}'",/"password": "'${Change_password}'",/g' /root/shadowsocksr/usermysql.json
-	sed -i "s/'password' => '"${Default_password}"'/'password' => '"${Change_password}"'/g" /home/wwwroot/default/config/database.php
-	echo "重新启动配置以生效..."
-	init 6
-    fi
 }
 
 function install_ssr(){
@@ -564,7 +552,7 @@ echo "# 6.  搭建BBR加速                                                     
 echo "# 7.  搭建锐速加速                                                      #"
 echo "# 8.  ssrosx升级脚本                                                   #"
 echo "# 9.  日志分析（仅支持单机单节点）                                        #"
-echo "# 10. 更改数据库密码(仅适用于已搭建前端)                                   #" 
+echo "# 10. 更改数据库密码                                                    #" 
 echo "#                                                                     #"
 echo "#    PS:建议请先搭建加速再搭建ssrosx相关。                                #"
 echo "#    此脚本仅适用于Centos 7. X 64位 系统                                 #"
