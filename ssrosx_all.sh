@@ -94,8 +94,8 @@ function install_ssrosx_nosql(){
 	#sed -i "s#Dbport#${Dbport}#" /home/wwwroot/default/config/database.php
 	#sed -i "s#Dbuser#${Dbuser}#" /home/wwwroot/default/config/database.php
 	#sed -i "s#Dbpassword#${Dbpassword}#" /home/wwwroot/default/config/database.php
-	read -p "是否需要安装 ‘redis’(默认：n):" InstallRedis
-	InstallRedis=${InstallRedis:-"n"}
+	read -p "是否需要安装 ‘redis’(默认：y):" InstallRedis
+	InstallRedis=${InstallRedis:-"y"}
 	if [ "$InstallRedis" == "y" ];then
 		mkdir /usr/local/redis
 		#install redis
@@ -213,8 +213,8 @@ function install_ssrosx_sql(){
 	#sed -i "s#Dbport#${Dbport}#" /home/wwwroot/default/config/database.php
 	#sed -i "s#Dbuser#${Dbuser}#" /home/wwwroot/default/config/database.php
 	#sed -i "s#Dbpassword#${Dbpassword}#" /home/wwwroot/default/config/database.php
-	read -p "是否需要安装 ‘redis’(默认：n):" InstallRedis
-	InstallRedis=${InstallRedis:-"n"}
+	read -p "是否需要安装 ‘redis’(默认：y):" InstallRedis
+	InstallRedis=${InstallRedis:-"y"}
 	if [ "$InstallRedis" == "y" ];then
 		mkdir /usr/local/redis
 		#install redis
