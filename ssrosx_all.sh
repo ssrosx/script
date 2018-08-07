@@ -360,6 +360,7 @@ function install_ssr(){
 	sed -i "s#ServerPort#${ServerPort}#" /root/shadowsocksr/user-config.json
 	sed -i "s#PasswordValue#${PasswordValue}#" /root/shadowsocksr/user-config.json
 	sed -i "s#WebPort#${WebPort}#" /root/shadowsocksr/user-config.json
+	sed -i "s#WebPort#${WebPort}#" /root/shadowsocksr/user-config.json
 	yum -y install lsof lrzsz python-devel libffi-devel openssl-devel iptables
 	systemctl stop firewalld.service
 	systemctl disable firewalld.service
@@ -415,6 +416,7 @@ function install_ssr_only(){
 	#sed -i "s#ServerPort#${ServerPort}#" /root/shadowsocksr/user-config-only.json
 	sed -i "s#PasswordValue#${PasswordValue}#" /root/shadowsocksr/user-config-only.json
 	sed -i "s#WebPort#${WebPort}#" /root/shadowsocksr/user-config-only.json
+	sed -i "s#WebPort#${WebPort}#" /root/shadowsocksr/user-config-only.json
 	rm -rf /root/shadowsocksr/user-config.json
 	mv /root/shadowsocksr/user-config-only.json /root/shadowsocksr/user-config.json
 	yum -y install lsof lrzsz python-devel libffi-devel openssl-devel iptables
@@ -439,8 +441,8 @@ function install_node(){
 	read -p "请输入您的节点编号(默认：1):  " UserNODE_ID
 	read -p "请输入SSR监听端口(默认：443):" ServerPort
 	read -p "请输入SSR密码(默认：m):" PasswordValue
-	read -p "请输入Web端口(默认：2333):" WebPort
-	read -p "选择443/80端口监听(默认：y):" SSROnly
+	read -p "请输入Web上返回的端口(默认：2333):" WebPort
+	read -p "选择443/80端口监听单端口(默认：y):" SSROnly
 	ServerPort=${ServerPort:-"443"}
 	PasswordValue=${PasswordValue:-"m"}
 	WebPort=${WebPort:-"2333"}
