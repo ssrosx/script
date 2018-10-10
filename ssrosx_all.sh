@@ -442,7 +442,7 @@ function install_node(){
 	read -p "请输入SSR监听端口(默认：443):" ServerPort
 	read -p "请输入SSR密码(默认：m):" PasswordValue
 	read -p "请输入Web上返回的端口(默认：2333):" WebPort
-	read -p "选择443/80端口监听单端口(默认：y):" SSROnly
+	read -p "选择443/80端口监听单端口[需要兼容SS选：n，SSR下AppStore中APP下载失败](默认：y):" SSROnly
 	ServerPort=${ServerPort:-"443"}
 	PasswordValue=${PasswordValue:-"m"}
 	WebPort=${WebPort:-"2333"}
