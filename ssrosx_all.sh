@@ -366,6 +366,64 @@ function install_ssr(){
 	systemctl disable firewalld.service
 }
 
+function install_ssr_compatible(){
+	yum -y update
+	yum -y install git 
+	yum -y install python-setuptools && easy_install pip 
+	yum -y groupinstall "Development Tools" 
+	#512M chicks add 1 g of Swap
+	dd if=/dev/zero of=/var/swap bs=1024 count=1048576
+	mkswap /var/swap
+	chmod 0644 /var/swap
+	swapon /var/swap
+	echo '/var/swap   swap   swap   default 0 0' >> /etc/fstab
+	#自动选择下载节点
+	GIT='raw.githubusercontent.com'
+	LIB='download.libsodium.org'
+	GIT_PING=`ping -c 1 -w 1 $GIT|grep time=|awk '{print $7}'|sed "s/time=//"`
+	LIB_PING=`ping -c 1 -w 1 $LIB|grep time=|awk '{print $7}'|sed "s/time=//"`
+	echo "$GIT_PING $GIT" > ping.pl
+	echo "$LIB_PING $LIB" >> ping.pl
+	libAddr=`sort -V ping.pl|sed -n '1p'|awk '{print $2}'`
+	if [ "$libAddr" == "$GIT" ];then
+		libAddr='https://raw.githubusercontent.com/ssrosx/script/master/libsodium-1.0.13.tar.gz'
+	else
+		libAddr='https://download.libsodium.org/libsodium/releases/libsodium-1.0.13.tar.gz'
+	fi
+	rm -f ping.pl
+	wget --no-check-certificate $libAddr
+	tar xf libsodium-1.0.13.tar.gz && cd libsodium-1.0.13
+	./configure && make -j2 && make install
+	echo /usr/local/lib > /etc/ld.so.conf.d/usr_local_lib.conf
+	ldconfig
+	yum -y install python-setuptools
+	easy_install supervisor
+    cd /root
+	wget https://raw.githubusercontent.com/ssrosx/script/master/shadowsocksr.zip
+	unzip shadowsocksr.zip
+	cd shadowsocksr
+	./initcfg.sh
+	chmod 777 *
+	wget -N -P /root/shadowsocksr/ https://raw.githubusercontent.com/ssrosx/script/master/user-config_compatible.json
+	wget -N -P /root/shadowsocksr/ https://raw.githubusercontent.com/ssrosx/script/master/userapiconfig.py
+	wget -N -P /root/shadowsocksr/ https://raw.githubusercontent.com/ssrosx/script/master/usermysql.json
+	sed -i "s#Userip#${Userip}#" /root/shadowsocksr/usermysql.json
+	sed -i "s#Dbuser#${Dbuser}#" /root/shadowsocksr/usermysql.json
+	sed -i "s#Dbport#${Dbport}#" /root/shadowsocksr/usermysql.json
+	sed -i "s#Dbpassword#${Dbpassword}#" /root/shadowsocksr/usermysql.json
+	sed -i "s#Dbname#${Dbname}#" /root/shadowsocksr/usermysql.json
+	sed -i "s#UserNODE_ID#${UserNODE_ID}#" /root/shadowsocksr/usermysql.json
+	sed -i "s#ServerPort#${ServerPort}#" /root/shadowsocksr/user-config_compatible.json
+	sed -i "s#PasswordValue#${PasswordValue}#" /root/shadowsocksr/user-config_compatible.json
+	sed -i "s#WebPort#${WebPort}#" /root/shadowsocksr/user-config_compatible.json
+	sed -i "s#WebPort#${WebPort}#" /root/shadowsocksr/user-config_compatible.json
+	rm -rf /root/shadowsocksr/user-config_compatible.json
+	mv /root/shadowsocksr/user-config_compatible.json /root/shadowsocksr/user-config.json
+	yum -y install lsof lrzsz python-devel libffi-devel openssl-devel iptables
+	systemctl stop firewalld.service
+	systemctl disable firewalld.service
+}
+
 function install_ssr_only(){
 	yum -y update
 	yum -y install git 
@@ -424,6 +482,64 @@ function install_ssr_only(){
 	systemctl disable firewalld.service
 }
 
+function install_ssr_only_compatible(){
+	yum -y update
+	yum -y install git 
+	yum -y install python-setuptools && easy_install pip 
+	yum -y groupinstall "Development Tools" 
+	#512M chicks add 1 g of Swap
+	dd if=/dev/zero of=/var/swap bs=1024 count=1048576
+	mkswap /var/swap
+	chmod 0644 /var/swap
+	swapon /var/swap
+	echo '/var/swap   swap   swap   default 0 0' >> /etc/fstab
+	#自动选择下载节点
+	GIT='raw.githubusercontent.com'
+	LIB='download.libsodium.org'
+	GIT_PING=`ping -c 1 -w 1 $GIT|grep time=|awk '{print $7}'|sed "s/time=//"`
+	LIB_PING=`ping -c 1 -w 1 $LIB|grep time=|awk '{print $7}'|sed "s/time=//"`
+	echo "$GIT_PING $GIT" > ping.pl
+	echo "$LIB_PING $LIB" >> ping.pl
+	libAddr=`sort -V ping.pl|sed -n '1p'|awk '{print $2}'`
+	if [ "$libAddr" == "$GIT" ];then
+		libAddr='https://raw.githubusercontent.com/ssrosx/script/master/libsodium-1.0.13.tar.gz'
+	else
+		libAddr='https://download.libsodium.org/libsodium/releases/libsodium-1.0.13.tar.gz'
+	fi
+	rm -f ping.pl
+	wget --no-check-certificate $libAddr
+	tar xf libsodium-1.0.13.tar.gz && cd libsodium-1.0.13
+	./configure && make -j2 && make install
+	echo /usr/local/lib > /etc/ld.so.conf.d/usr_local_lib.conf
+	ldconfig
+	yum -y install python-setuptools
+	easy_install supervisor
+    cd /root
+	wget https://raw.githubusercontent.com/ssrosx/script/master/shadowsocksr.zip
+	unzip shadowsocksr.zip
+	cd shadowsocksr
+	./initcfg.sh
+	chmod 777 *
+	wget -N -P /root/shadowsocksr/ https://raw.githubusercontent.com/ssrosx/script/master/user-config-only_compatible.json
+	wget -N -P /root/shadowsocksr/ https://raw.githubusercontent.com/ssrosx/script/master/userapiconfig.py
+	wget -N -P /root/shadowsocksr/ https://raw.githubusercontent.com/ssrosx/script/master/usermysql.json
+	sed -i "s#Userip#${Userip}#" /root/shadowsocksr/usermysql.json
+	sed -i "s#Dbuser#${Dbuser}#" /root/shadowsocksr/usermysql.json
+	sed -i "s#Dbport#${Dbport}#" /root/shadowsocksr/usermysql.json
+	sed -i "s#Dbpassword#${Dbpassword}#" /root/shadowsocksr/usermysql.json
+	sed -i "s#Dbname#${Dbname}#" /root/shadowsocksr/usermysql.json
+	sed -i "s#UserNODE_ID#${UserNODE_ID}#" /root/shadowsocksr/usermysql.json
+	#sed -i "s#ServerPort#${ServerPort}#" /root/shadowsocksr/user-config-only_compatible.json
+	sed -i "s#PasswordValue#${PasswordValue}#" /root/shadowsocksr/user-config-only_compatible.json
+	sed -i "s#WebPort#${WebPort}#" /root/shadowsocksr/user-config-only_compatible.json
+	sed -i "s#WebPort#${WebPort}#" /root/shadowsocksr/user-config-only_compatible.json
+	rm -rf /root/shadowsocksr/user-config.json
+	mv /root/shadowsocksr/user-config-only_compatible.json /root/shadowsocksr/user-config.json
+	yum -y install lsof lrzsz python-devel libffi-devel openssl-devel iptables
+	systemctl stop firewalld.service
+	systemctl disable firewalld.service
+}
+
 function install_node(){
 	clear
 	echo
@@ -443,10 +559,12 @@ function install_node(){
 	read -p "请输入SSR密码(默认：m):" PasswordValue
 	read -p "请输入Web上返回的端口(默认：2333):" WebPort
 	read -p "选择443/80端口监听单端口[需要兼容SS选：n，SSR下AppStore中APP下载失败](默认：y):" SSROnly
+	read -p "是否兼容SS(默认：n):" Compatible
 	ServerPort=${ServerPort:-"443"}
 	PasswordValue=${PasswordValue:-"m"}
 	WebPort=${WebPort:-"2333"}
 	SSROnly=${SSROnly:-"y"}
+	Compatible=${Compatible:-"n"}
 	IPAddress=`wget http://members.3322.org/dyndns/getip -O - -q ; echo`;
 	Userip=${Userip:-"${IPAddress}"}
 	Dbname=${Dbname:-"ssrosx"}
@@ -455,9 +573,17 @@ function install_node(){
 	Dbpassword=${Dbpassword:-"root"}
 	UserNODE_ID=${UserNODE_ID:-"1"}
 	if [ "$SSROnly" == "y" ];then
-		install_ssr_only
+		if [ "$Compatible" == "y" ];then
+			install_ssr_only_compatible
+		else
+			install_ssr_only
+		fi
 	else
-		install_ssr
+		if [ "$Compatible" == "y" ];then
+			install_ssr_compatible
+		else
+			install_ssr
+		fi
 	fi
     # 启用supervisord
 	echo_supervisord_conf > /etc/supervisord.conf
