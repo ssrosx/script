@@ -65,15 +65,17 @@ EOF
 		sudo firewall-cmd --permanent --zone=public --add-service=https
 		sudo firewall-cmd --reload
 
+		read -p "请从 web01.zip web02.zip web03.zip 中选择输入web样式(默认web01.zip):" WebStyle
+		WebStyle=${WebStyle:-"web01.zip"}
 		cd /var/www/$DomainName
-		sudo wget https://raw.githubusercontent.com/ssrosx/caddy/master/web_demo.zip
-		sudo unzip web_demo.zip
-		sudo rm -rf web_demo.zip
+		sudo wget https://raw.githubusercontent.com/ssrosx/caddy/master/$WebStyle
+		sudo unzip $WebStyle
+		sudo rm -rf $WebStyle
 		sudo systemctl restart caddy.service
 		echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 		echo "#         打开http://$DomainName or https://$DomainName            #"
 		echo "#         打开http://www.$DomainName or https://www.$DomainName    #"
-		echo "#         在配置的时候请输入端口：$rndport                            #"
+		echo "#         在配置的时候请输入端口：$rndport                             #"
 		echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 		sudo shutdown -r now
 		
