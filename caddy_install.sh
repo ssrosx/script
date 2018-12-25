@@ -29,11 +29,18 @@ function install_caddy(){
 		sudo touch /etc/caddy/Caddyfile
 		sudo chown caddy:caddy /etc/caddy/Caddyfile
 		sudo chmod 444 /etc/caddy/Caddyfile
+		read -p "请输入要监听的端口(默认443,其他值使用随机):" DomainPort
+		DomainPort=${DomainPort:-"443"}
+		if [[ $UpdateSystem != "443" ]]
+		then
 		rndport=$(rand 10000 50000)
+		else
+		rndport=$DomainPort
+		fi
 		echo -e "1 ： 使用IP安装"
 		echo -e "2 ： 使用域名安装"
 		read -p "请选择安装类型（默认IP安装）:" InstallType
-		InstallType=${InstallType:-"ip"}
+		InstallType=${InstallType:-"1"}
 		if [[ $InstallType == "1" ]]
 		then
 			yum install curl -y
