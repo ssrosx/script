@@ -31,7 +31,7 @@ function install_caddy(){
 		sudo chmod 444 /etc/caddy/Caddyfile
 		read -p "请输入要监听的端口(默认443,其他值使用随机):" DomainPort
 		DomainPort=${DomainPort:-"443"}
-		if [[ $UpdateSystem == "443" ]]
+		if [[ $DomainPort == "443" ]]
 		then
 		rndport=$DomainPort
 		else
