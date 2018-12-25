@@ -31,11 +31,11 @@ function install_caddy(){
 		sudo chmod 444 /etc/caddy/Caddyfile
 		read -p "请输入要监听的端口(默认443,其他值使用随机):" DomainPort
 		DomainPort=${DomainPort:-"443"}
-		if [[ $UpdateSystem != "443" ]]
+		if [[ $UpdateSystem == "443" ]]
 		then
-		rndport=$(rand 10000 50000)
-		else
 		rndport=$DomainPort
+		else
+		rndport=$(rand 10000 50000)
 		fi
 		echo -e "1 ： 使用IP安装"
 		echo -e "2 ： 使用域名安装"
